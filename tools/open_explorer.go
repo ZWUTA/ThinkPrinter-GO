@@ -8,6 +8,7 @@ import (
 
 // OpenExplorer 打开本地浏览器
 func OpenExplorer(url string) {
+	url = "http://" + url
 	var cmd *exec.Cmd
 	switch runtime.GOOS {
 	case "windows":

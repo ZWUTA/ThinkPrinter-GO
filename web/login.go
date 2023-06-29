@@ -36,28 +36,20 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	res, err := fmt.Fprintf(w, "Hello, World!")
 
-	if err != nil {
-		log.Println(err)
-	}
-	log.Println(res)
 	loginData := UserCredentials{}
 	// 读取请求体中的数据
-	err = json.NewDecoder(r.Body).Decode(&loginData)
+	err := json.NewDecoder(r.Body).Decode(&loginData)
 	if err != nil {
 		panic(err)
 	}
-	//status, err := database.Login(loginData.Username, loginData.Password)
 	db, err := database.GetDB()
 	defer database.CloseDB(db)
 
 	if err != nil {
 		panic(err)
 	}
-	if err != nil {
-		panic(err)
-	}
+	// 从数据库中读取用户信息
 	user := User{}
 
 	if loginData.Username == "" || loginData.Password == "" {
@@ -68,7 +60,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	} else if loginData.Username != "" {
-		// 检查用户名和密码是否正确
+		log.Printf("根据用户名登录: %s\n", loginData.Username)
+		// 根据用户名登录
 		sqlStmt := `SELECT uid, sno, username, password, sname, balance, vip FROM users WHERE username=? ;`
 		rows, err := db.Query(sqlStmt, loginData.Username)
 		if err != nil {
@@ -86,8 +79,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 				panic(err)
 			}
 		}(rows)
+		err = rows.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
 	} else {
-		// 检查学号和密码是否正确
+		log.Printf("根据学号登录: %s\n", loginData.SNO)
+		// 根据学号登录
 		sqlStmt := `SELECT uid, sno, username, password, sname, balance, vip FROM users WHERE sno=? ;`
 		rows, err := db.Query(sqlStmt, loginData.SNO)
 		if err != nil {
@@ -105,7 +103,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 				panic(err)
 			}
 		}(rows)
+		err = rows.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
+
+	// 将用户输入的密码加密
+	loginData.Password = tools.Encrypt(loginData.Password)
 
 	// 如果用户名和密码正确, 返回登录成功
 	if user.Username == loginData.Username && user.Password == loginData.Password {

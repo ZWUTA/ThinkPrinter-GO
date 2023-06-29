@@ -10,12 +10,15 @@ import (
 	"thinkPrinter/tools"
 )
 
+// UserCredentials 仅用于登录和注册
 type UserCredentials struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	SNO      string `json:"sno"`
 	SName    string `json:"name"`
 }
+
+// User 用于登录后的用户信息
 type User struct {
 	UID      int     `json:"uid"`
 	SNO      string  `json:"sno"`
@@ -55,24 +58,55 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-
-	// 检查用户名和密码是否正确
-	sqlStmt := `SELECT uid, sno, username, password, sname, balance, vip FROM users WHERE username=? ;`
-	rows, err := db.Query(sqlStmt, loginData.Username)
-	if err != nil {
-		panic(err)
-	}
 	user := User{}
-	for rows.Next() {
-		err := rows.Scan(&user.UID, &user.SNO, &user.Username, &user.Password, &user.SName, &user.Balance, &user.VIP)
+
+	if loginData.Username == "" || loginData.Password == "" {
+		// 前端返回了空的用户名或密码，大概是想搞事情？
+		_, err := fmt.Fprintf(w, "？？？？？？？")
 		if err != nil {
 			panic(err)
 		}
+		return
+	} else if loginData.Username != "" {
+		// 检查用户名和密码是否正确
+		sqlStmt := `SELECT uid, sno, username, password, sname, balance, vip FROM users WHERE username=? ;`
+		rows, err := db.Query(sqlStmt, loginData.Username)
+		if err != nil {
+			panic(err)
+		}
+		for rows.Next() {
+			err := rows.Scan(&user.UID, &user.SNO, &user.Username, &user.Password, &user.SName, &user.Balance, &user.VIP)
+			if err != nil {
+				panic(err)
+			}
+		}
+		defer func(rows *sql.Rows) {
+			err := rows.Close()
+			if err != nil {
+				panic(err)
+			}
+		}(rows)
+	} else {
+		// 检查学号和密码是否正确
+		sqlStmt := `SELECT uid, sno, username, password, sname, balance, vip FROM users WHERE sno=? ;`
+		rows, err := db.Query(sqlStmt, loginData.SNO)
+		if err != nil {
+			panic(err)
+		}
+		for rows.Next() {
+			err := rows.Scan(&user.UID, &user.SNO, &user.Username, &user.Password, &user.SName, &user.Balance, &user.VIP)
+			if err != nil {
+				panic(err)
+			}
+		}
+		defer func(rows *sql.Rows) {
+			err := rows.Close()
+			if err != nil {
+				panic(err)
+			}
+		}(rows)
 	}
-	err = rows.Close()
-	if err != nil {
-		panic(err)
-	}
+
 	// 如果用户名和密码正确, 返回登录成功
 	if user.Username == loginData.Username && user.Password == loginData.Password {
 		_, err := fmt.Fprintf(w, "登录成功")
@@ -147,6 +181,11 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
+		err = rows.Close()
+		if err != nil {
+			panic(err)
+		}
+
 	} else {
 		sqlStmt := `SELECT count(*) FROM users WHERE username=?;`
 		rows, err := db.Query(sqlStmt, userCredentials.Username)
@@ -177,6 +216,10 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		err = rows.Err()
 		if err != nil {
 			log.Fatal(err)
+		}
+		err = rows.Close()
+		if err != nil {
+			panic(err)
 		}
 	}
 

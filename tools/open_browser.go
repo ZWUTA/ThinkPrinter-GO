@@ -5,8 +5,8 @@ import (
 	"log"
 )
 
-// OpenExplorer 打开本地浏览器
-func OpenExplorer(url string) {
+// OpenBrowser 打开本地浏览器
+func OpenBrowser(url string) {
 	url = "http://" + url
 	err := browser.OpenURL(url)
 	if err != nil {

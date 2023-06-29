@@ -32,7 +32,7 @@ func main() {
 	http.HandleFunc("/signup", web.SignUp)
 	log.Printf("Server is running at %s", url)
 	// 打开浏览器
-	tools.OpenExplorer(url)
+	tools.OpenBrowser(url)
 	// 监听端口
 	err := http.ListenAndServe(url, nil)
 	if err != nil {

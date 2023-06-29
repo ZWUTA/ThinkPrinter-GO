@@ -147,10 +147,6 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		err = rows.Close()
-		if err != nil {
-			panic(err)
-		}
 	} else {
 		sqlStmt := `SELECT count(*) FROM users WHERE username=?;`
 		rows, err := db.Query(sqlStmt, userCredentials.Username)
@@ -160,7 +156,6 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 				panic(err)
 			}
 		}(rows)
-
 		if err != nil {
 			panic(err)
 		}
@@ -175,16 +170,13 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 				if err != nil {
 					panic(err)
 				}
+				// 如果用户名已存在，返回错误
 				return
 			}
 		}
 		err = rows.Err()
 		if err != nil {
 			log.Fatal(err)
-		}
-		err = rows.Close()
-		if err != nil {
-			panic(err)
 		}
 	}
 

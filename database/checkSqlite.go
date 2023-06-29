@@ -14,7 +14,7 @@ func GetDB() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	db.SetMaxOpenConns(1) // Limit to one concurrent connection
+	//db.SetMaxOpenConns(1) // Limit to one concurrent connection
 	log.Println("数据库连接成功")
 	return db, nil
 }

@@ -31,12 +31,12 @@ func main() {
 	http.HandleFunc("/login", web.Login)
 	http.HandleFunc("/signup", web.SignUp)
 	log.Printf("Server is running at %s", url)
+	// 打开浏览器
+	tools.OpenExplorer(url)
 	// 监听端口
 	err := http.ListenAndServe(url, nil)
 	if err != nil {
 		log.Println("监听端口发生异常, 请确保权限，并检查端口是否被占用")
 		log.Panic(err)
 	}
-	// 打开浏览器
-	tools.OpenExplorer(url)
 }

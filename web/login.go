@@ -1,6 +1,7 @@
 package web
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -147,6 +148,12 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	} else {
 		sqlStmt := `SELECT count(*) FROM users WHERE username=?;`
 		rows, err := db.Query(sqlStmt, userCredentials.Username)
+		defer func(rows *sql.Rows) {
+			err := rows.Close()
+			if err != nil {
+				panic(err)
+			}
+		}(rows)
 
 		if err != nil {
 			panic(err)

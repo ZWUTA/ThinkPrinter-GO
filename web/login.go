@@ -119,6 +119,12 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	} else if userCredentials.Username == "" {
 		sqlStmt := `SELECT count(*) FROM users WHERE sno=?;`
 		rows, err := db.Query(sqlStmt, userCredentials.SNO)
+		defer func(rows *sql.Rows) {
+			err := rows.Close()
+			if err != nil {
+				panic(err)
+			}
+		}(rows)
 
 		if err != nil {
 			panic(err)

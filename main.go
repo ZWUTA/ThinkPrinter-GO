@@ -36,7 +36,7 @@ func main() {
 	r.POST("/login", web.Login)
 	r.POST("/signup", web.SignUp)
 
-	log.Printf("Server is running at %s", url)
+	log.Printf("程序正在监听地址 %s", url)
 	// 打开浏览器
 	tools.OpenBrowser(bind, port)
 	// 监听端口

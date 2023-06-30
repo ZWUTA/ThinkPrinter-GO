@@ -20,7 +20,7 @@ func InitDB() error {
 	}
 
 	// 迁移 schema
-	err = DB.AutoMigrate(&entity.UserDAO{})
+	err = DB.AutoMigrate(&entity.User{})
 	if err != nil {
 		return err
 	}

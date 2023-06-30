@@ -9,15 +9,14 @@ import (
 	"thinkPrinter/web"
 )
 
-var (
-	port int
-	url  string
+const (
+	// 绑定端口
+	port = 8080
+	// 监听地址
+	bind = "0.0.0.0"
 )
 
 func init() {
-	port = 8080
-	url = fmt.Sprintf("localhost:%d", port)
-
 	// 检查sqlite数据库是否存在, 不存在则创建
 	err := database.CheckSqlite()
 	if err != nil {
@@ -26,13 +25,15 @@ func init() {
 }
 
 func main() {
+	url := fmt.Sprintf("%s:%d", bind, port)
+
 	// 创建路由
 	http.HandleFunc("/", web.Index)
 	http.HandleFunc("/login", web.Login)
 	http.HandleFunc("/signup", web.SignUp)
 	log.Printf("Server is running at %s", url)
 	// 打开浏览器
-	tools.OpenBrowser(url)
+	tools.OpenBrowser(bind, port)
 	// 监听端口
 	err := http.ListenAndServe(url, nil)
 	if err != nil {

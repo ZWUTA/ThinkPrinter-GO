@@ -10,10 +10,3 @@ type User struct {
 	Number   string
 	Vip      bool `gorm:"default:false"`
 }
-
-type UserDTO struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Name     string `json:"name"`
-	Number   string `json:"number"`
-}

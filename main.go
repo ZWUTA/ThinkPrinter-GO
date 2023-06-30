@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"thinkPrinter/database"
 	"thinkPrinter/tools"
 	"thinkPrinter/web"
@@ -29,20 +28,22 @@ func init() {
 func main() {
 	url := fmt.Sprintf("%s:%d", bind, port)
 
+	log.Printf("程序正在监听地址 %s", url)
+
 	// 创建路由
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
+	r.HandleMethodNotAllowed = true
 	r.GET("/", web.Index)
 	r.POST("/login", web.Login)
 	r.POST("/signup", web.SignUp)
 
-	log.Printf("程序正在监听地址 %s", url)
 	// 打开浏览器
 	tools.OpenBrowser(bind, port)
-	// 监听端口
-	err := http.ListenAndServe(url, r)
+
+	// 监听地址
+	err := r.Run(url)
 	if err != nil {
-		log.Println("监听端口发生异常, 请确保权限，并检查端口是否被占用")
-		log.Panic(err)
+		log.Println("监听端口发生异常, 请确保权限，并检查端口是否被占用", err)
 	}
 }

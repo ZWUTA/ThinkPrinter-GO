@@ -30,7 +30,6 @@ func SignUp(c *gin.Context) {
 		c.JSON(http.StatusNotAcceptable, gin.H{
 			"message": "用户已存在",
 		})
-		log.Println("用户已存在")
 
 	} else if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		// 用户不存在，可以注册
@@ -52,7 +51,6 @@ func SignUp(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "注册成功",
 		})
-		log.Println("注册成功")
 
 	} else {
 		// 其他错误

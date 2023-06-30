@@ -30,12 +30,10 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": "用户名或密码错误",
 		})
-		log.Println("用户名或密码错误")
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "登录成功",
 	})
-	log.Println("登录成功")
 }

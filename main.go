@@ -17,10 +17,10 @@ const (
 )
 
 func init() {
-	// 检查sqlite数据库是否存在, 不存在则创建
-	err := database.CheckSqlite()
+	// 初始化、迁移数据库
+	err := database.InitDB()
 	if err != nil {
-		log.Fatal(err)
+		log.Panicln("数据库初始化失败", err)
 	}
 }
 

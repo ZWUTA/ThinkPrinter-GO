@@ -35,8 +35,8 @@ func main() {
 	r := gin.Default()
 	r.HandleMethodNotAllowed = true
 	r.GET("/", web.Index)
-	r.POST("/login", web.Login)
-	r.POST("/signup", web.SignUp)
+	r.POST("/api/login", web.Login)
+	r.POST("/api/signup", web.SignUp)
 
 	// 打开浏览器
 	tools.OpenBrowser(bind, port)

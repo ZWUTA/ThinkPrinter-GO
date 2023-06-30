@@ -7,6 +7,8 @@ import (
 	"thinkPrinter/database"
 	"thinkPrinter/tools"
 	"thinkPrinter/web"
+
+	"github.com/gin-gonic/gin"
 )
 
 const (
@@ -28,14 +30,17 @@ func main() {
 	url := fmt.Sprintf("%s:%d", bind, port)
 
 	// 创建路由
-	http.HandleFunc("/", web.Index)
-	http.HandleFunc("/login", web.Login)
-	http.HandleFunc("/signup", web.SignUp)
+	gin.SetMode(gin.ReleaseMode)
+	r := gin.Default()
+	r.GET("/", web.Index)
+	r.POST("/login", web.Login)
+	r.POST("/signup", web.SignUp)
+
 	log.Printf("Server is running at %s", url)
 	// 打开浏览器
 	tools.OpenBrowser(bind, port)
 	// 监听端口
-	err := http.ListenAndServe(url, nil)
+	err := http.ListenAndServe(url, r)
 	if err != nil {
 		log.Println("监听端口发生异常, 请确保权限，并检查端口是否被占用")
 		log.Panic(err)

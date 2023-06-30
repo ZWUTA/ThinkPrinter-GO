@@ -12,12 +12,6 @@ import (
 )
 
 func SignUp(c *gin.Context) {
-	// 检查请求方法. 如果不是POST, 返回405
-	if c.Request.Method != http.MethodPost {
-		c.String(http.StatusMethodNotAllowed, "Method Not Allowed")
-		return
-	}
-
 	// 数据库读取user
 	var user entity.User
 	// JSON解析到user

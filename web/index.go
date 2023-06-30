@@ -8,7 +8,7 @@ import (
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseFiles("./web/index.html")
+	tmpl, err := template.ParseFiles("static/index.html")
 	if err != nil {
 		log.Println(err)
 	}

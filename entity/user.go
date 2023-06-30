@@ -2,7 +2,7 @@ package entity
 
 import "gorm.io/gorm"
 
-type UserDAO struct {
+type User struct {
 	gorm.Model
 	Username string `gorm:"unique;not null;"`
 	Password string `gorm:"not null"`

@@ -2,11 +2,13 @@ package web
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"log"
 	"net/http"
 	. "thinkPrinter/database"
 	"thinkPrinter/entity"
 	"thinkPrinter/tools"
+	"time"
 )
 
 func Login(c *gin.Context) {
@@ -33,7 +35,23 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// 生成token
+	token := jwt.New(jwt.SigningMethodHS256)
+	claims := token.Claims.(jwt.MapClaims)
+	claims["username"] = user.Username
+	claims["vip"] = user.Vip
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+
+	tokenString, err := token.SignedString([]byte("thinkPrinter"))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "token生成错误",
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "登录成功",
+		"token":   tokenString,
 	})
 }

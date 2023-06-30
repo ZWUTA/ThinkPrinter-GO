@@ -10,7 +10,7 @@ func SignJWT(secretKey string, claims jwt.MapClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(secretKey))
 	if err != nil {
-		return "", fmt.Errorf("failed to sign the token: %v", err)
+		return "", fmt.Errorf("签署token失败: %v", err)
 	}
 	return tokenString, nil
 }
@@ -21,12 +21,12 @@ func VerifyJWT(tokenString string, secretKey string) (jwt.MapClaims, error) {
 		return []byte(secretKey), nil
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse the token: %v", err)
+		return nil, fmt.Errorf("解析token失败: %v", err)
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok || !token.Valid {
-		return nil, fmt.Errorf("invalid token")
+		return nil, fmt.Errorf("token非法")
 	}
 
 	return claims, nil

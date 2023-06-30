@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"fmt"
 	"log"
 	"thinkPrinter/database"
@@ -9,6 +10,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+//go:embed static
+var f embed.FS
 
 const (
 	// 绑定端口
@@ -23,6 +27,8 @@ func init() {
 	if err != nil {
 		log.Panicln("数据库初始化失败", err)
 	}
+	// 传入静态文件
+	web.F = f
 }
 
 func main() {

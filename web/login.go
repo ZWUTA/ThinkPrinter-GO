@@ -5,6 +5,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"log"
 	"net/http"
+	"thinkPrinter/config"
 	. "thinkPrinter/database"
 	"thinkPrinter/entity"
 	"thinkPrinter/tools"
@@ -40,9 +41,10 @@ func Login(c *gin.Context) {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["username"] = user.Username
 	claims["vip"] = user.Vip
-	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+	// config.C.Security.JWTExpiration 储存的是秒数
+	claims["exp"] = time.Now().Add(time.Second * time.Duration(config.C.Security.JWTExpiration)).Unix()
 
-	tokenString, err := token.SignedString([]byte("thinkPrinter"))
+	tokenString, err := token.SignedString(config.C.Security.JWTSecret)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "token生成错误",

@@ -4,6 +4,7 @@ import (
 	"embed"
 	"fmt"
 	"log"
+	"thinkPrinter/config"
 	"thinkPrinter/database"
 	"thinkPrinter/tools"
 	"thinkPrinter/web"
@@ -13,13 +14,6 @@ import (
 
 //go:embed static
 var f embed.FS
-
-const (
-	// 绑定端口
-	port = 8080
-	// 监听地址
-	bind = "0.0.0.0"
-)
 
 func init() {
 	// 初始化、迁移数据库
@@ -32,7 +26,7 @@ func init() {
 }
 
 func main() {
-	url := fmt.Sprintf("%s:%d", bind, port)
+	url := fmt.Sprintf("%s:%d", config.C.Core.Bind, config.C.Core.Port)
 
 	log.Printf("程序正在监听地址 %s", url)
 
@@ -45,7 +39,7 @@ func main() {
 	r.POST("/api/signup", web.SignUp)
 
 	// 打开浏览器
-	tools.OpenBrowser(bind, port)
+	tools.OpenBrowser(config.C.Core.Bind, config.C.Core.Port)
 
 	// 监听地址
 	err := r.Run(url)

@@ -2,14 +2,11 @@ package web
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
 	"log"
 	"net/http"
-	"thinkPrinter/config"
 	. "thinkPrinter/database"
 	"thinkPrinter/entity"
 	"thinkPrinter/tools"
-	"time"
 )
 
 func Login(c *gin.Context) {
@@ -37,14 +34,7 @@ func Login(c *gin.Context) {
 	}
 
 	// 生成token
-	token := jwt.New(jwt.SigningMethodHS256)
-	claims := token.Claims.(jwt.MapClaims)
-	claims["username"] = user.Username
-	claims["vip"] = user.Vip
-	// config.C.Security.JWTExpiration 储存的是秒数
-	claims["exp"] = time.Now().Add(time.Second * time.Duration(config.C.Security.JWTExpiration)).Unix()
-
-	tokenString, err := token.SignedString(config.C.Security.JWTSecret)
+	tokenString, err := tools.SignJWT(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "token生成错误",

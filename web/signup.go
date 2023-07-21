@@ -41,6 +41,7 @@ func SignUp(c *gin.Context) {
 			return
 		}
 
+		// 通过注册的用户默认不是VIP
 		userDTO.Vip = false
 		userDTO.Password = tools.Encrypt(userDTO.Password)
 

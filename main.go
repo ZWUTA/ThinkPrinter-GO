@@ -8,6 +8,7 @@ import (
 	"thinkPrinter/database"
 	"thinkPrinter/tools"
 	"thinkPrinter/web"
+	"thinkPrinter/web/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,6 +35,10 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.HandleMethodNotAllowed = true
+
+	// JWT 中间件
+	r.Use(middleware.JWT())
+
 	r.GET("/", web.Index)
 	r.POST("/api/login", web.Login)
 	r.POST("/api/signup", web.SignUp)

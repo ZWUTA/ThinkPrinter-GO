@@ -39,6 +39,7 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "token生成错误",
 		})
+		log.Println(err)
 		return
 	}
 

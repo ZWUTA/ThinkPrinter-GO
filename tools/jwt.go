@@ -39,13 +39,13 @@ func SignJWT(user entity.User) (string, error) {
 func ParseJWT(tokenString string) (*MyClaims, error) {
 	var claims MyClaims
 	token, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
-		return config.C.Security.JWTSecret, nil
+		return []byte(config.C.Security.JWTSecret), nil
 	})
 	if err != nil {
 		return nil, fmt.Errorf("解析token失败: %v", err)
 	}
 	if !token.Valid {
-		return nil, fmt.Errorf("无效的token")
+		return nil, fmt.Errorf("token无效")
 	}
 	return &claims, nil
 }

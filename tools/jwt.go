@@ -27,7 +27,8 @@ func SignJWT(user entity.User) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(config.C.Security.JWTSecret)
+	// config.C.Security.JWTSecret 是 string 类型，需要转换成 []byte 类型
+	tokenString, err := token.SignedString([]byte(config.C.Security.JWTSecret))
 	if err != nil {
 		return "", fmt.Errorf("签署token失败: %v", err)
 	}

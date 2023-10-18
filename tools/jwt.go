@@ -1,51 +1,43 @@
 package tools
 
 import (
-	"fmt"
-	"github.com/golang-jwt/jwt/v5"
-	"thinkPrinter/config"
-	"thinkPrinter/entity"
+	"errors"
+	. "github.com/golang-jwt/jwt/v5"
+	"strconv"
+	"thinkprinter/models"
 	"time"
 )
 
-type MyClaims struct {
-	Username string `json:"username"`
-	Vip      bool   `json:"vip"`
-	jwt.RegisteredClaims
-}
+var jwtKey = []byte(models.C.Security.JWTSecret)
 
-// SignJWT 签发 JWT
-func SignJWT(user entity.User) (string, error) {
-	claims := MyClaims{
-		Username: user.Username,
-		Vip:      user.Vip,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(config.C.JWTExpiration) * time.Second)),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			NotBefore: jwt.NewNumericDate(time.Now()),
-		},
+func CreateToken(user models.User) (string, error) {
+	claims := RegisteredClaims{
+		Issuer:   "ThinkPrint-GO",
+		Subject:  "Login",
+		Audience: ClaimStrings{user.Username},
+		ExpiresAt: NewNumericDate(time.Now().
+			Add(time.Duration(models.C.Security.JWTExpiration) * time.Second)),
+		NotBefore: NewNumericDate(time.Now()),
+		IssuedAt:  NewNumericDate(time.Now()),
+		ID:        strconv.Itoa(int(user.ID)),
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	// config.C.Security.JWTSecret 是 string 类型，需要转换成 []byte 类型
-	tokenString, err := token.SignedString([]byte(config.C.Security.JWTSecret))
-	if err != nil {
-		return "", fmt.Errorf("签署token失败: %v", err)
-	}
-	return tokenString, nil
+	token := NewWithClaims(SigningMethodHS256, claims)
+	return token.SignedString(jwtKey)
 }
 
-// ParseJWT 解析 JWT
-func ParseJWT(tokenString string) (*MyClaims, error) {
-	var claims MyClaims
-	token, err := jwt.ParseWithClaims(tokenString, &claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(config.C.Security.JWTSecret), nil
+func ParseToken(tokenString string) (*RegisteredClaims, error) {
+	token, err := ParseWithClaims(tokenString, &RegisteredClaims{}, func(token *Token) (interface{}, error) {
+		return jwtKey, nil
 	})
 	if err != nil {
-		return nil, fmt.Errorf("解析token失败: %v", err)
+		return nil, err
 	}
-	if !token.Valid {
-		return nil, fmt.Errorf("token无效")
+
+	claims, ok := token.Claims.(*RegisteredClaims)
+	if !ok || !token.Valid {
+		return nil, errors.New("token不合法")
 	}
-	return &claims, nil
+
+	return claims, nil
 }

@@ -3,11 +3,11 @@ package tools
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"thinkPrinter/config"
+	"thinkprinter/models"
 )
 
 func Encrypt(password string) string {
-	salt := config.C.Security.PasswordSalt
+	salt := models.C.Security.PasswordSalt
 	// 创建 SHA256 哈希对象
 	hash := sha256.New()
 

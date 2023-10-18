@@ -13,6 +13,14 @@ import (
 
 // Upload 批量上传文件
 func Upload(c *gin.Context) {
+	var allowedExt = []string{
+		".docx",
+		".doc",
+		".pdf",
+		".odt",
+		".rtf",
+	}
+
 	form, err := c.MultipartForm()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ERR.
@@ -27,6 +35,18 @@ func Upload(c *gin.Context) {
 	username := c.GetString("username")
 	dir := filepath.Join(os.TempDir(), "ThinkPrint", username)
 	for _, file := range files {
+		// 检查文件后缀
+		for _, ext := range allowedExt {
+			if filepath.Ext(file.Filename) == ext {
+				break
+			}
+			c.JSON(http.StatusBadRequest, ERR.
+				WithCode(http.StatusBadRequest).
+				WithMsg("非法文件格式，仅支持").
+				WithData(allowedExt))
+			return
+		}
+
 		slog.Info("上传文件", "username", username,
 			"filename", file.Filename,
 			"size", file.Size,

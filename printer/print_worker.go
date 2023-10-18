@@ -39,6 +39,7 @@ func PrintWorker() {
 			slog.Error("打印失败", "file", docPath, "error", err)
 			return
 		}
+		slog.Info("打印完成", "file", docPath)
 		WG.Done()
 	}
 }

@@ -13,7 +13,9 @@ func SetupRouter() *gin.Engine {
 	// 分组注册路由
 	root := r.Group("/")
 	{
-		root.GET("/", handler.Index)
+		root.StaticFile("/", "./dist/index.html")
+		root.StaticFile("/favicon.ico", "./dist/favicon.ico")
+		root.Static("/assets", "./dist/assets")
 	}
 	api := r.Group("/api")
 	{

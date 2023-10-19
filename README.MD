@@ -1,6 +1,53 @@
-# 全新jwb打印系统
+# 全新JWB打印系统
 
-thinkPrinter-go
+ThinkPrint-GO
+
+## 简介
+
+ThinkPrint-GO是一个基于Golang的全新JWB打印系统，它的前身是ThinkPrint-python
+
+本项目采用纯Golang重写，前后端分离设计。
+
+前端使用Vue3 + NaiveUI，后端使用SQLite、Gin、Gorm、golang-jwt、viper、slog
+
+注意，本项目需要设备内安装``Microsoft Word 2016``或``Microsoft Office 365``以上版本，否则无法正常使用
+
+## 功能
+
+- [x] 用户注册
+- [x] 用户登录
+- [x] JWT鉴权
+- [x] 批量文件上传
+- [x] 多用户打印队列
+- [x] 打印历史日志
+- [x] Microsoft Word打印
+- [x] 高准确率解析
+
+支持的文件格式：
+- [x] docx
+- [x] doc
+- [x] pdf
+- [x] odt
+- [x] rtf
+
+## 部署
+
+### 服务器端
+
+1. 安装``Microsoft Word 2016``以上或``Microsoft Office 365``
+2. 从GitHub下载最新的``ThinkPrint-GO``二进制文件
+3. 将工作目录切换到``ThinkPrint-GO``所在目录
+4. 运行``ThinkPrint-GO``，首次启动程序将自动创建``config.toml``配置文件
+5. 自定义修改``config.toml``配置文件
+6. 再次运行``ThinkPrint-GO``，程序将自动创建数据库文件``sqlite.db``
+
+### 客户端
+
+1. 访问``http://<服务器IP>:<端口号>``，默认端口号为``5204``
+2. 进行登录或注册
+3. 上传文件（可多选）
+4. 你将看到前方排队打印人数
+5. 等待打印完成，取走你的文件
 
 ## git commit
 

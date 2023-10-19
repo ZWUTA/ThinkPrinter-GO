@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strconv"
 	. "thinkprinter/models"
 	"thinkprinter/printer"
 )
@@ -62,13 +61,18 @@ func Upload(c *gin.Context) {
 		}
 	}
 
-	count := printer.WG.GetCount()
+	waiting := printer.WG.GetCount()
+	count := 0
 	// 推送到打印队列
 	for _, file := range files {
 		printer.PrintQueue <- filepath.Join(dir, file.Filename)
 		printer.WG.Add(1)
+		count++
 	}
 	c.JSON(http.StatusOK, OK.
 		WithMsg("成功推送到打印队列").
-		WithData("前方排队"+strconv.Itoa(count)+"个任务"))
+		WithData(gin.H{
+			"waiting": waiting,
+			"count":   count,
+		}))
 }

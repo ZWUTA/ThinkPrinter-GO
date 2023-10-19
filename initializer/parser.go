@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"os"
 	. "thinkprinter/models"
+	"time"
 )
 
 func init() {
@@ -64,5 +65,6 @@ func newConfig() {
 	}
 
 	slog.Warn("配置文件初始化成功，程序即将退出，请修改配置文件后重新启动")
+	time.Sleep(3 * time.Second)
 	os.Exit(0)
 }

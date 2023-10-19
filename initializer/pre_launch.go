@@ -24,6 +24,7 @@ func PreLaunch() {
 		slog.Warn("如果你不知道如何修复这个问题，请删除config.toml文件，然后重新启动程序。请注意，您将丢失所有配置与密钥")
 		panic(err)
 	}
+	updateLogger()
 	path := models.C.Print.WordExePath
 	if _, err = os.Stat(path); err != nil {
 		if os.IsNotExist(err) {

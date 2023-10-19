@@ -41,6 +41,32 @@ ThinkPrint-GO是一个基于Golang的全新JWB打印系统，它的前身是Thin
 5. 自定义修改``config.toml``配置文件
 6. 再次运行``ThinkPrint-GO``，程序将自动创建数据库文件``sqlite.db``
 
+### 配置文件注解
+
+````toml
+[core]
+# 服务器端口号
+Port = 5204
+# 服务器绑定IP
+Bind = '0.0.0.0'
+# 日志等级，可选：debug, info, warn, error
+LogLevel = 'info'
+
+[print]
+# Word程序路径，注意使用双斜杠，不要使用单斜杠。
+# 请根据实际情况修改，如果你的Word安装在其他位置，请自行修改
+# 请务必确保Word程序路径正确，否则无法正常打印
+WordExePath = 'C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE'
+
+[security]
+# 密码盐值，创建用户前请修改
+PasswordSalt = 'ThinkPrinter'
+# JWT密钥，使用UUID生成，请随意修改
+JWTSecret = 'c487798f-0335-43c0-906f-4feb247132a4'
+# JWT过期时间，单位为秒
+JWTExpiration = 1800
+````
+
 ### 客户端
 
 1. 访问``http://<服务器IP>:<端口号>``，默认端口号为``5204``

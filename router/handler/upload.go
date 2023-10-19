@@ -24,11 +24,14 @@ func Upload(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ERR.
 			WithCode(http.StatusBadRequest).
-			WithMsg("上传文件失败"))
+			WithMsg("表单无效"))
 		return
 	}
 	files, ok := form.File["files"]
 	if !ok || len(files) == 0 {
+		c.JSON(http.StatusBadRequest, ERR.
+			WithCode(http.StatusBadRequest).
+			WithMsg("无文件上传"))
 		return
 	}
 	username := c.GetString("username")

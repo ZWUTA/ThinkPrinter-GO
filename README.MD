@@ -35,11 +35,13 @@ ThinkPrint-GO是一个基于Golang的全新JWB打印系统，它的前身是Thin
 ### 服务器端
 
 1. 安装``Microsoft Word 2016``以上或``Microsoft Office 365``
-2. 从GitHub下载最新的``ThinkPrint-GO``二进制文件
-3. 将工作目录切换到``ThinkPrint-GO``所在目录
-4. 运行``ThinkPrint-GO``，首次启动程序将自动创建``config.toml``配置文件
-5. 自定义修改``config.toml``配置文件
-6. 再次运行``ThinkPrint-GO``，程序将自动创建数据库文件``sqlite.db``
+2. 从GitHub下载最新的``ThinkPrint-GO``二进制文件和``thinkprint-vue``前端包
+3. 将``ThinkPrint-GO``二进制文件和``thinkprint-vue``前端包放置在同一目录下。
+4. 请确保``dist``文件夹与``ThinkPrint-GO``同级
+5. 将工作目录切换到``ThinkPrint-GO``所在目录
+6. 运行``ThinkPrint-GO``，首次启动程序将自动创建``config.toml``配置文件
+7. 自定义修改``config.toml``配置文件
+8. 再次运行``ThinkPrint-GO``，程序将自动创建数据库文件``sqlite.db``
 
 ### 配置文件注解
 

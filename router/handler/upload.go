@@ -1,13 +1,14 @@
 package handler
 
 import (
-	"github.com/gin-gonic/gin"
 	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
 	. "thinkprinter/models"
 	"thinkprinter/printer"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Upload 批量上传文件
@@ -35,7 +36,7 @@ func Upload(c *gin.Context) {
 		return
 	}
 	username := c.GetString("username")
-	dir := filepath.Join(os.TempDir(), "ThinkPrint", username)
+	dir := filepath.Join(os.TempDir(), "ThinkPrinter", username)
 	for _, file := range files {
 		// 检查文件后缀
 		for _, ext := range allowedExt {

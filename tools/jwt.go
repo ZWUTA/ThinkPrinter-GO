@@ -2,17 +2,18 @@ package tools
 
 import (
 	"errors"
-	. "github.com/golang-jwt/jwt/v5"
 	"strconv"
 	"thinkprinter/models"
 	"time"
+
+	. "github.com/golang-jwt/jwt/v5"
 )
 
 var jwtKey = []byte(models.C.Security.JWTSecret)
 
 func CreateToken(user models.User) (string, error) {
 	claims := RegisteredClaims{
-		Issuer:   "ThinkPrint-GO",
+		Issuer:   "ThinkPrinter-GO",
 		Subject:  "Login",
 		Audience: ClaimStrings{user.Username},
 		ExpiresAt: NewNumericDate(time.Now().

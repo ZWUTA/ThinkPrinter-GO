@@ -1,18 +1,13 @@
 package main
 
 import (
-	"embed"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log/slog"
 	"thinkprinter/initializer"
 	"thinkprinter/models"
 	"thinkprinter/router"
-	"thinkprinter/router/handler"
 )
-
-//go:embed static
-var f embed.FS
 
 func main() {
 	url := fmt.Sprintf("%s:%d", models.C.Core.Bind, models.C.Core.Port)
@@ -28,6 +23,5 @@ func main() {
 }
 
 func init() {
-	handler.F = f
 	initializer.PreLaunch()
 }

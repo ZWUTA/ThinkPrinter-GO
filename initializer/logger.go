@@ -12,14 +12,29 @@ func initLogger() {
 	w := os.Stderr
 
 	opts := &tint.Options{
-		AddSource:  toLogLevel(models.C.Core.LogLevel) == slog.LevelDebug,
-		Level:      toLogLevel(models.C.Core.LogLevel),
-		TimeFormat: "2006-01-02 15:04:05",
+		AddSource:  false,
+		Level:      slog.LevelInfo,
+		TimeFormat: "2006/01/02 15:04:05",
 	}
 
 	logger := slog.New(tint.NewHandler(w, opts))
 
 	slog.SetDefault(logger)
+}
+
+func updateLogger() {
+	w := os.Stderr
+
+	opts := &tint.Options{
+		AddSource:  toLogLevel(models.C.Core.LogLevel) == slog.LevelDebug,
+		Level:      toLogLevel(models.C.Core.LogLevel),
+		TimeFormat: "2006/01/02 15:04:05",
+	}
+
+	logger := slog.New(tint.NewHandler(w, opts))
+
+	slog.SetDefault(logger)
+	slog.Info("日志等级更新", "level", models.C.Core.LogLevel)
 }
 
 func toLogLevel(level string) slog.Level {

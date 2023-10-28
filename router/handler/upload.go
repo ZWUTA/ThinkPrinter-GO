@@ -1,14 +1,14 @@
 package handler
 
 import (
-	"github.com/gin-gonic/gin"
 	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
-	"strconv"
 	. "thinkprinter/models"
 	"thinkprinter/printer"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Upload 批量上传文件
@@ -25,15 +25,18 @@ func Upload(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ERR.
 			WithCode(http.StatusBadRequest).
-			WithMsg("上传文件失败"))
+			WithMsg("表单无效"))
 		return
 	}
 	files, ok := form.File["files"]
 	if !ok || len(files) == 0 {
+		c.JSON(http.StatusBadRequest, ERR.
+			WithCode(http.StatusBadRequest).
+			WithMsg("无文件上传"))
 		return
 	}
 	username := c.GetString("username")
-	dir := filepath.Join(os.TempDir(), "ThinkPrint", username)
+	dir := filepath.Join(os.TempDir(), "ThinkPrinter", username)
 	for _, file := range files {
 		// 检查文件后缀
 		for _, ext := range allowedExt {
@@ -62,13 +65,18 @@ func Upload(c *gin.Context) {
 		}
 	}
 
-	count := printer.WG.GetCount()
+	waiting := printer.WG.GetCount()
+	count := 0
 	// 推送到打印队列
 	for _, file := range files {
 		printer.PrintQueue <- filepath.Join(dir, file.Filename)
 		printer.WG.Add(1)
+		count++
 	}
 	c.JSON(http.StatusOK, OK.
 		WithMsg("成功推送到打印队列").
-		WithData("前方排队"+strconv.Itoa(count)+"个任务"))
+		WithData(gin.H{
+			"waiting": waiting,
+			"count":   count,
+		}))
 }

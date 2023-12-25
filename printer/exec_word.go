@@ -1,9 +1,13 @@
 package printer
 
 import (
+	"context"
+	"errors"
+	"log/slog"
 	"os"
 	"os/exec"
 	"thinkprinter/models"
+	"time"
 )
 
 func Print(docPath string) error {
@@ -14,7 +18,15 @@ func Print(docPath string) error {
 		}
 	}
 
-	cmd := exec.Command(models.C.Print.WordExePath, docPath,
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer func() {
+		cancel()
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			slog.Error("打印超时，任务已被强行停止", "file", docPath)
+		}
+	}()
+
+	cmd := exec.CommandContext(ctx, models.C.Print.WordExePath, docPath,
 		"/mFilePrintDefault",
 		"/mFileCloseOrExit",
 		"/x",
